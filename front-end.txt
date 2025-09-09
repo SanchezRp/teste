@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Safe Energy – UI</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root{
+    --bg:#0f1116;
+    --panel:#151922;
+    --panel-2:#10141b;
+    --text:#e9eefc;
+    --muted:#9aa8c7;
+    --line:#222a36;
+    --primary:#2d6bff;
+    --primary-2:#1e4ed8;
+    --ok:#2ee59d;
+    --warn:#ff4d4d;
+    --glass: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+    --card-grad: radial-gradient(120% 120% at 10% 0%, #123a8a 0%, #12233e 35%, #10141b 100%);
+    --card-grad-red: radial-gradient(120% 120% at 10% 0%, #7d0f2b 0%, #2b1420 35%, #10141b 100%);
+    --btn-grad: linear-gradient(135deg, #3a7bff, #1b49ff);
+    --radius:18px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1000px 600px at -10% -10%, #213356 0%, transparent 60%),
+      radial-gradient(900px 700px at 110% -10%, #1a2a4a 0%, transparent 60%),
+      radial-gradient(1000px 700px at 50% 120%, #15223a 0%, transparent 60%),
+      var(--bg);
+    color:var(--text);
+    font:16px/1.4 "Poppins",system-ui,Segoe UI,Roboto,Arial;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:18px;
+    padding:18px 12px 40px;
+  }
+
+  /* simple top nav to swap screens */
+  .topnav{
+    display:flex; gap:8px; align-items:center; justify-content:center;
+    background:var(--panel-2); border:1px solid var(--line);
+    padding:6px; border-radius:999px;
+    position:sticky; top:10px; z-index:10;
+  }
+  .topnav button{
+    background:transparent; color:var(--muted); border:none; cursor:pointer;
+    padding:8px 14px; border-radius:999px; font-weight:600;
+  }
+  .topnav button.active{ color:#fff; background:var(--btn-grad); }
+
+  /* phone frame */
+  .phone{
+    width:min(420px, 100%);
+    aspect-ratio:9/19.5;
+    max-height:840px;
+    border-radius:34px;
+    padding:18px 16px 24px;
+    background:var(--panel-2);
+    border:1px solid #1a2230;
+    box-shadow:
+      0 20px 50px rgba(0,0,0,.6),
+      inset 0 0 0 1px rgba(255,255,255,.04);
+    position:relative;
+  }
+
+  .brand{
+    letter-spacing:.35rem;
+    font-weight:800; font-size:28px;
+    color:#5aa2ff;
+    text-transform:uppercase;
+  }
+  .bolt{
+    width:34px;height:34px;border-radius:50%;
+    display:grid;place-items:center;
+    background:linear-gradient(180deg, #2c6fff, #1f46c4);
+    box-shadow:0 8px 24px rgba(45,107,255,.35);
+  }
+  .bolt i{color:#fff}
+
+  .header{
+    display:flex; align-items:center; gap:10px;
+    margin-bottom:18px;
+  }
+
+  .screen{ display:none; height:100%; }
+  .screen.active{ display:block; }
+
+  h1{margin:6px 0 2px; font-size:32px; font-weight:800;}
+  .subtitle{color:var(--muted); font-size:14px; margin-bottom:10px}
+
+  .field{
+    margin:10px 0; position:relative;
+  }
+  .field input{
+    width:100%;
+    background:var(--glass);
+    border:1px solid var(--line);
+    color:var(--text);
+    outline:none;
+    height:48px; padding:12px 44px 12px 44px;
+    border-radius:12px;
+    transition:.2s border-color ease;
+  }
+  .field input::placeholder{ color:#7d8bad }
+  .field input:focus{ border-color:#2e63ff }
+  .field .icon{
+    position:absolute; left:12px; top:50%; transform:translateY(-50%);
+    color:#7d8bad; font-size:16px;
+  }
+  .field .trailing{
+    position:absolute; right:10px; top:50%; transform:translateY(-50%);
+    color:#7d8bad; font-size:16px; cursor:pointer;
+  }
+  .strength{
+    display:flex; gap:6px; align-items:center; color:#7d8bad; margin-top:6px; font-size:12px;
+  }
+  .strength .bar{flex:1; height:6px; background:#1c2534; border-radius:999px; overflow:hidden}
+  .strength .bar > span{display:block; height:100%; width:35%; background:var(--ok)}
+
+  .btn{
+    display:block; width:100%; height:50px; border-radius:14px;
+    background:var(--btn-grad);
+    color:#fff; border:none; font-weight:700; cursor:pointer;
+    margin-top:12px; box-shadow:0 10px 28px rgba(45,107,255,.35);
+  }
+  .btn:active{ transform:translateY(1px) }
+
+  .or{
+    display:grid; grid-template-columns:1fr auto 1fr; gap:10px; align-items:center;
+    color:#7d8bad; font-size:12px; margin:14px 0 8px;
+  }
+  .or::before,.or::after{content:""; height:1px; background:var(--line)}
+  .providers{ display:flex; gap:12px; justify-content:center; }
+  .providers button{
+    width:44px;height:44px;border-radius:12px;border:1px solid var(--line);
+    background:var(--panel); color:#c9d4f2; cursor:pointer;
+  }
+  .providers i{font-size:18px}
+
+  /* DASHBOARD */
+  .welcome{
+    display:flex; align-items:center; gap:10px; margin-bottom:8px;
+  }
+  .avatar{
+    width:34px;height:34px;border-radius:50%;
+    background:url('https://images.unsplash.com/photo-1507146426996-ef05306b995a?q=80&w=80&auto=format&fit=crop') center/cover;
+    border:2px solid #2b3550;
+  }
+  .tabs{
+    display:flex; gap:12px; margin:8px 0 14px;
+  }
+  .chip{
+    font-weight:700; font-size:12px; letter-spacing:.08em;
+    padding:8px 12px; border-radius:999px; border:1px solid var(--line);
+    color:#b6c3e6; background:var(--panel-2); cursor:pointer;
+  }
+  .chip.active{ background:#203058; color:#fff; border-color:#2a3b66 }
+
+  .chart{
+    height:160px; border-radius:18px; padding:14px 10px;
+    background:linear-gradient(180deg, #141a25, #0f131a);
+    border:1px solid var(--line); position:relative; overflow:hidden;
+  }
+  .chart svg{ width:100%; height:100% }
+  .dot{
+    position:absolute; width:10px; height:10px; border-radius:999px; background:#77a6ff;
+    box-shadow:0 0 0 6px rgba(45,107,255,.15);
+    top:38%; left:58%;
+  }
+
+  .grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px; }
+  .card{
+    padding:14px; border-radius:16px; border:1px solid var(--line);
+    background:var(--card-grad);
+  }
+  .card h4{margin:0 0 4px; font-size:11px; letter-spacing:.12em; color:#a9b8da}
+  .bill{ color:#38e6a2; font-size:22px; font-weight:800 }
+  .peak{ color:#ff4d4d; font-size:18px; font-weight:800 }
+  .card.red{ background:var(--card-grad-red) }
+
+  .sync{
+    margin-top:12px; padding:16px; border-radius:16px;
+    background:var(--panel); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .sync .title{ font-weight:800; letter-spacing:.05em }
+  .sync .fx{ display:flex; gap:6px }
+  .glow{
+    width:10px;height:10px;border-radius:50%;
+    background:linear-gradient(180deg,#fff,#96b7ff); filter:blur(1px);
+    animation:blink 1.8s infinite ease-in-out alternate;
+  }
+  @keyframes blink { to{opacity:.25; transform:translateY(-2px)} }
+
+  .dock{
+    position:absolute; left:50%; transform:translateX(-50%);
+    bottom:14px; display:flex; gap:12px; background:rgba(15,19,26,.55);
+    border:1px solid var(--line); padding:8px 10px; border-radius:999px; backdrop-filter: blur(10px);
+  }
+  .dock button{
+    width:42px;height:42px;border-radius:999px;border:1px solid var(--line);
+    background:var(--panel); color:#c9d4f2; cursor:pointer;
+  }
+  .dock .cta{ background:var(--btn-grad); color:#fff; box-shadow:0 10px 24px rgba(45,107,255,.35) }
+
+  /* helpers */
+  .row{ display:flex; align-items:center; justify-content:space-between; gap:10px }
+  .muted{ color:var(--muted) }
+  .right{ text-align:right }
+  .sp8{ height:8px }
+</style>
+</head>
+<body>
+
+  <!-- simple top nav to switch screens -->
+  <div class="topnav" aria-label="trocar de tela">
+    <button data-screen="login" class="active">Login</button>
+    <button data-screen="signup">Cadastro</button>
+    <button data-screen="dashboard">Dashboard</button>
+  </div>
+
+  <main class="phone" id="phone">
+
+    <!-- LOGIN -->
+    <section class="screen active" id="screen-login" aria-labelledby="login-title">
+      <div class="header">
+        <div class="bolt"><i class="fa-solid fa-bolt"></i></div>
+        <div class="brand">Safe Energy</div>
+      </div>
+
+      <h1 id="login-title">Welcome Back!</h1>
+      <div class="subtitle">welcome back we missed you</div>
+
+      <label class="field">
+        <i class="fa-regular fa-user icon"></i>
+        <input type="text" placeholder="Username">
+      </label>
+
+      <label class="field">
+        <i class="fa-solid fa-key icon"></i>
+        <input id="login-pass" type="password" placeholder="Password">
+        <i class="fa-regular fa-eye-slash trailing" data-toggle="#login-pass" title="mostrar/ocultar"></i>
+      </label>
+
+      <button class="btn">Sign in</button>
+
+      <div class="or">Or continue with</div>
+      <div class="providers">
+        <button title="Google"><i class="fa-brands fa-google"></i></button>
+        <button title="Apple"><i class="fa-brands fa-apple"></i></button>
+        <button title="Facebook"><i class="fa-brands fa-facebook-f"></i></button>
+      </div>
+
+      <div class="dock">
+        <button title="Home"><i class="fa-regular fa-circle"></i></button>
+        <button class="cta" title="Power"><i class="fa-solid fa-bolt"></i></button>
+        <button title="Menu"><i class="fa-solid fa-ellipsis"></i></button>
+      </div>
+    </section>
+
+    <!-- SIGNUP -->
+    <section class="screen" id="screen-signup" aria-labelledby="signup-title">
+      <div class="header">
+        <div class="bolt"><i class="fa-solid fa-bolt"></i></div>
+        <div class="brand">Safe Energy</div>
+      </div>
+
+      <h1 id="signup-title">Get Started Free</h1>
+      <div class="subtitle">Free Forever. No Credit Card Needed</div>
+
+      <label class="field">
+        <i class="fa-regular fa-envelope icon"></i>
+        <input type="email" placeholder="yourname@gmail.com">
+      </label>
+
+      <label class="field">
+        <i class="fa-regular fa-user icon"></i>
+        <input type="text" placeholder="@yourname">
+      </label>
+
+      <label class="field">
+        <i class="fa-solid fa-key icon"></i>
+        <input id="signup-pass" type="password" placeholder="Password">
+        <i class="fa-regular fa-eye-slash trailing" data-toggle="#signup-pass" title="mostrar/ocultar"></i>
+      </label>
+      <div class="strength">
+        <div class="bar"><span id="bar-fill"></span></div>
+        <span id="strength-label">weak</span>
+      </div>
+
+      <button class="btn" data-go="dashboard">Sign in</button>
+
+      <div class="or">Or sign up with</div>
+      <div class="providers">
+        <button title="Google"><i class="fa-brands fa-google"></i></button>
+        <button title="Apple"><i class="fa-brands fa-apple"></i></button>
+        <button title="Facebook"><i class="fa-brands fa-facebook-f"></i></button>
+      </div>
+
+      <div class="dock">
+        <button title="Home"><i class="fa-regular fa-circle"></i></button>
+        <button class="cta" title="Power"><i class="fa-solid fa-bolt"></i></button>
+        <button title="Menu"><i class="fa-solid fa-ellipsis"></i></button>
+      </div>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section class="screen" id="screen-dashboard" aria-labelledby="dash-title">
+      <div class="row welcome">
+        <div class="avatar" aria-hidden="true"></div>
+        <div>
+          <div><span class="muted">Hi,</span> <strong>Henry</strong> <span class="muted">👋</span></div>
+          <div class="muted" style="font-size:12px">Welcome Back</div>
+        </div>
+        <div class="right" style="margin-left:auto;">
+          <button class="providers" style="gap:0;background:none;border:none">
+            <i class="fa-regular fa-bell"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="row">
+        <h2 id="dash-title" style="margin:0">Energy Usage</h2>
+        <a class="muted" href="#" style="text-decoration:none">More Details&nbsp;<i class=

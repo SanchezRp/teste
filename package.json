@@ -1,0 +1,19 @@
+{
+  "name": "energia-app",
+  "version": "1.0.0",
+  "description": "App para monitoramento de consumo de energia",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "Rafael",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "dayjs": "^1.11.9",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0"
+  }
+}
